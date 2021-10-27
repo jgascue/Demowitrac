@@ -4,7 +4,7 @@ export default {
   // para hacer el built con archivos estáticos
   target: 'static',
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  ssr: true,
+  ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - demo-witrac',
@@ -67,7 +67,6 @@ export default {
     customVariables: ['~/assets/variables.scss'],
     theme: {
       dark: true,
-      witrac: false,
       themes: {
         dark: {
           primary: colors.green.darken2,
@@ -78,22 +77,12 @@ export default {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
         },
-        witrac: {
-          primary: colors.green.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
-        }
-
       }
     }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    analyze: true,
+    analyze: false,
   }
 }

@@ -86,6 +86,7 @@
       <v-footer
         align="center"
         height="80px"
+        
         > 
         <v-row
           align="center"

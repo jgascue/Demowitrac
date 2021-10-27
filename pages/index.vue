@@ -1,127 +1,108 @@
 <template>
     <div>
-    <v-row no-gutters justify="center" align="center">
-        <v-col cols="12" sm="8" md="6">
-            <v-row class=" py-4 d-flex justify-center">
-                <WitracLogo />
-            </v-row>
-        </v-col>
-    </v-row>
-    <v-row no-gutters>
-        <v-col class="d-none d-sm-none d-lg-flex"></v-col>
-        <v-col class="d-sm-block col-xs-12 col-sm-12 col-md-12">
-            <h1> {{ title }} </h1>
-            <v-card 
-                tile
-                class="align-center justify-center"
-            >
-                <v-row class=" pa-5">
-                    <v-col class="d-flex pa-3 justify-start align-left">
-                        Add any task: {{ list.length }}
-                    </v-col>
-                    <v-col class="d-flex pa-3 justify-end">
-                        <v-btn v-if="list.length > 0" x-small class="btn btn-input" @click.prevent="removeAll"> Delete All</v-btn>
-                    </v-col>
-                </v-row>
-            </v-card>
-            <v-card
-                tile
-                class="d-flex pl-5 align-center justify-center padding-w--50"
-            >
-                <v-text-field 
-                    v-model="newTask"
-                    type="text"
-                    name="newTask"
-                    outlined
-                    clearable
-                    prepend-icon="mdi-share-circle"
-                    class="white-text text-white"
-                    placerholder="type your task"
-                    @keyup.enter="addTask"
+
+        <WitracLogo />
+
+        <v-row no-gutters>
+            <v-col class="d-none d-sm-none d-lg-flex"></v-col>
+            <v-col class="d-sm-block col-xs-12 col-sm-12 col-md-12 col-lg-6">
+
+                <h1> {{ title }} </h1>
+
+                <v-card 
+                    tile
+                    class="align-center justify-center"
                 >
-                </v-text-field>
-
-                <div class="d-flex justify-start align-stretch mb-7">
-                    <v-btn
-                        icon
-                        fab
-                        small
-                        class="ml-3"
-                        @click.prevent="addTask"
+                    <v-row class="pa-5">
+                        <v-col class="d-flex pa-3 justify-start align-left">
+                            Add any task: 
+                        </v-col>
+                        <v-col class="d-flex pa-3 justify-end">
+                            <v-btn v-if="list.length > 0" x-small class=""
+                                @click.prevent="removeAll"
+                            > 
+                                Delete All {{ list.length }}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </v-card>
+                <v-card
+                    tile
+                    class="d-flex pl-5 align-center flex-grow-1 justify-center padding-w--50"
+                >
+                    <v-text-field 
+                        v-model="newTask"
+                        type="text"
+                        name="newTask"
+                        outlined
+                        clearable
+                        prepend-icon="mdi-share-circle"
+                        class="text-white"
+                        placeholder="type new task"
+                        @keyup.enter="addTask"
                     >
-                        <v-icon color="orange lighten-1">
-                            mdi-plus-circle
-                        </v-icon>
-                    </v-btn>
-                </div>
-            </v-card>
-            <v-list-item-group multiple>
-                <v-list-item v-for="(lit, i) in list" :key="i">
-                    <template #default="{ active, toggle }">
-                        <v-list-item-content
-                            class="text-left"
+                    </v-text-field>
+
+                    <div class="d-flex justify-start flex-shrink-1 align-stretch ma-7">
+                        <v-select
+                            v-model="item"
+                            class=""
+                            :items="Object.keys(categories)"
+                            label="Priority"
+                            outlined
+                            dense
+                            @change="selectCategory(item, type)"
                         >
-                            <v-list-item-title :class="{done: active} ">
-                                {{ lit.name  }}
-                            </v-list-item-title>
-                            
-                            <div v-if="active" class="icon--checked">
-                                
-                                <div class="jobdone">
-                                    
-                                    <v-icon small color="green darken-3">mdi-check</v-icon>
-                                    <em>
-                                        <small>great! task done, something less to do</small>
-                                    </em>
-                                </div>
-                            </div>
-                            
-                        </v-list-item-content>
-                        <v-checkbox
-                            class="ml-2 pl-5"
-                            v-model="active"
-                            :id="`task-${i}`"
-                        ></v-checkbox>
-
-                        <label v-show="!active" class="confirm-message">check</label>
-                        <label v-show="active" class="confirm-message">checked</label>
-
-                        <v-btn 
+                        </v-select>
+                        <v-btn
+                            icon
                             fab
-                            ripple
-                            x-small
-                            color="red"
-                            class="pa-0 ml-3" @click="deleteTask(i)">
-                            <v-icon small class="white--text">mdi-close</v-icon>
+                            small
+                            class="ml-3"
+                            @click.prevent="addTask"
+                        >
+                            <v-icon color="orange lighten-1">
+                                mdi-plus-circle
+                            </v-icon>
                         </v-btn>
-              
-                    </template>
+                    </div>
+                </v-card>
 
-                </v-list-item>
-            </v-list-item-group>
-        </v-col>
-        <v-col class="d-none d-lg-flex"></v-col>
-    </v-row>
-  </div>
+                <ListResults :list="list" :active="active" @updateList="updateList" />
+
+            </v-col>
+            <v-col class="d-none d-lg-flex"></v-col>
+        </v-row>
+    </div>
 </template>
 
 <script>
 
 import WitracLogo from '@/components/LogoWitrac.vue'
+import ListResults from '@/components/ListResults.vue'
 
 
 export default {
     components: {
-        WitracLogo
+        WitracLogo,
+        ListResults
     },
     data: () => {
         return {
+            categories: {
+                'Hight': 'red',
+                'Medium' : 'pink',
+                'Low' : 'lime',
+            },
             list: [],
+            item: null,
+            type: null,
+            active: false,
             thereisList: false,
             checkbox: false,
             show: true,
             newTask: null,
-            title: 'Get your work in order'
+            title: 'Jobs for the day'
         }
     },
     computed: {
@@ -132,52 +113,63 @@ export default {
             }
         }
     },
+    mounted() {
+        if (localStorage.getItem('list')) {
+            try {
+                this.list = JSON.parse(localStorage.getItem('list'));
+            } catch(e) {
+                localStorage.removeItem('list');
+            }
+        }
+    },
     methods: {
         addTask() {
-            const value = this.newTask && this.newTask.trim();
+            const value = this.newTask;
             if (!value) {
                 return;
             }
             this.list.push({
                 name: this.newTask,
-                done: false
+                check: false,
+                priority: this.list.priority,
+                color: this.list.color
             });
             this.newTask = "";
+            this.saveList();
         },
-        deleteTask(index) {
+        updateList(index) {
             this.list.splice(index, 1);
+            this.saveList();
         },
         removeAll() {
             this.list = []
+            this.saveList();
         },
+        saveList() {
+            const parsed = JSON.stringify(this.list);
+            localStorage.setItem('list', parsed);
+        },
+
+        selectCategory(item, type) {
+            this.list.priority = item
+            this.list.color = type
+        }
     }
 
 }
 
-    /* import { defineComponent } from "vue";
-    import { useAddList } from "./composables/useAddList";
-
-    export default defineComponent {
-    components: {},
-    data: () => {
-        return {
-        data: {},
-        list: [],
-        tarea: null
-        }
-    }
-    } */
 </script>
 
 <style scoped lang="scss">
 
     h1 {
         font-size: 1.8rem;
-        margin: 1em;
+        margin: 10px;
         width: content;
         text-align: center;
         text-transform: uppercase;
         padding-bottom: 15px;
+        margin-bottom: 60px;
 
         &:before {
             content: "";
@@ -186,66 +178,27 @@ export default {
             background: rgba(172, 255, 47, 0.507);
             height: 10px;
             margin-left: 20px;
-            bottom: -50px;
+            bottom: 60px;
+            margin: 0 20%;
             border-radius: 6px;
-            z-index: 1111;
-            //animation: runner 1.3s ease-in-out infinite;
         }
     }
 
-    @keyframes runner {
-        0% {
-            transform: translateX(0px);
-        }
-        45% {
-            transform: translateX(230px);
-        }
-        55% {
-            transform: translateX(calc(100%-30px));
-        }
-        100% {
-            transform: translateX(2000px);
-        }
-    }
-    .icon--checked {
-
-    }
-
-    .v-item--active {
-        .icon--checked {
-            transition: all 1s ease-in;
-            color: rgb(8, 219, 8);
-            font-size: 14px;
-            text-decoration: none;
-        }
-    }
     .v-list-item {
         border-bottom: 1px dotted rgb(104, 104, 104);
     }
     .v-list-item__title {
         margin-bottom: -4px;
     }
+    .select--priority {
+        max-width: "60px";
+        width: "50px";
+    }
     .v-label {
         font-size: 14px!important;
         margin-right: 25px!important;
     }
-    .v-item {
-        background: rgb(32, 39, 28);
-        color: black;
-        margin-bottom: 4px !important;
-        &--active {
-            background: rgb(110, 187, 66);
-            border-radius: 4px;
-            margin-bottom: 4px;
-            border-bottom: 3px solid green;
-        }
-    }
-    .jobdone {
-        margin-bottom: -10px;
-        padding-top: 10px;
-        color: rgb(0, 49, 7);
-    }
-    
+
     li {
         list-style: none;
     }
@@ -259,10 +212,6 @@ export default {
 
     .confirm-message {
         font-size: 14px;
-    }
-
-    h1 {
-        margin-bottom: 60px;
     }
 
     .btn-input {
