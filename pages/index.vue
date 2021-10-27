@@ -28,7 +28,7 @@
                 </v-card>
                 <v-card
                     tile
-                    class="d-flex pl-5 align-center flex-grow-1 justify-center padding-w--50"
+                    class="d-flex pl-5 align-center justify-center padding-w--50"
                 >
                     <v-text-field 
                         v-model="newTask"
@@ -43,10 +43,10 @@
                     >
                     </v-text-field>
 
-                    <div class="d-flex justify-start flex-shrink-1 align-stretch ma-7">
+                    <div class="d-flex justify-center align-left ma-2">
                         <v-select
                             v-model="item"
-                            class=""
+                            class="d-none d-sm-none d-lg-flex"
                             :items="Object.keys(categories)"
                             label="Priority"
                             outlined
